@@ -1,0 +1,39 @@
+name: taskwarrior3-simpoir
+base: core24
+version: '0.0'
+adopt-info: taskwarrior
+summary: Command line task list management
+description: |
+  Taskwarrior is a sophisticated command line todo list and task
+  manager with a lot of features:
+  * colorful tabbed output
+  * feature rich search function
+  * tags
+  * statistics
+  * Getting Things Done compatible
+  * interactive editing of items in text editor
+grade: devel
+confinement: strict
+
+apps:
+  task:
+    command: usr/local/bin/task
+    plugs:
+      - network
+
+parts:
+  taskwarrior:
+    source-type: git
+    source: https://github.com/GothenburgBitFactory/taskwarrior
+    plugin: cmake
+    build-packages:
+      - uuid-dev
+    build-snaps:
+      - rustup
+    override-build: |
+      rustup default stable
+      snapcraftctl build
+    override-pull: |
+      snapcraftctl pull
+      git checkout "$(git describe --tags --no-abbrev)"
+      craftctl set version="$(git describe --tags)"
