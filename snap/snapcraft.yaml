@@ -36,4 +36,4 @@ parts:
     override-pull: |
       snapcraftctl pull
       git checkout "$(git describe --tags --no-abbrev)"
-      craftctl set version="$(git describe --tags)"
+      craftctl set version="$(git describe --tags|sed 's/^v//')"
