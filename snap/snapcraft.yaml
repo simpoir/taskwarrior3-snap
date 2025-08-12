@@ -14,14 +14,23 @@ description: |
   * interactive editing of items in text editor
 grade: devel
 confinement: strict
+website:
+  - "https://github.com/GothenburgBitFactory/taskwarrior"
+  - "https://github.com/simpoir/taskwarrior3-snap"
 
 apps:
   task:
     command: usr/local/bin/task
     plugs:
       - network
+  man:
+    command: man.sh
 
 parts:
+  scripts:
+    source: .
+    plugin: dump
+
   taskwarrior:
     source-type: git
     source: https://github.com/GothenburgBitFactory/taskwarrior
@@ -37,3 +46,4 @@ parts:
       snapcraftctl pull
       git checkout "$(git describe --tags --no-abbrev)"
       craftctl set version="$(git describe --tags|sed 's/^v//')"
+      sed -i 's:${CMAKE_INSTALL_PREFIX}:/snap/'"$(craftctl get name)"'/current/usr/local:' cmake.h.in
