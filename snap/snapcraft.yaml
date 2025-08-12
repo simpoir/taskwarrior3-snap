@@ -21,6 +21,8 @@ website:
 apps:
   task:
     command: usr/local/bin/task
+    environment:
+      HOME: $SNAP_USER_COMMON
     plugs:
       - network
   man:
@@ -43,7 +45,8 @@ parts:
       rustup default stable
       snapcraftctl build
     override-pull: |
+      set -eu
       snapcraftctl pull
       git checkout "$(git describe --tags --no-abbrev)"
       craftctl set version="$(git describe --tags|sed 's/^v//')"
-      sed -i 's:${CMAKE_INSTALL_PREFIX}:/snap/'"$(craftctl get name)"'/current/usr/local:' cmake.h.in
+      sed -i 's:${CMAKE_INSTALL_PREFIX}:/snap/${CRAFT_PROJECT_NAME}/current/usr/local:' cmake.h.in
